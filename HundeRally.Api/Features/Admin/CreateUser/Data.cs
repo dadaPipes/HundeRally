@@ -1,5 +1,6 @@
 ﻿using HundeRally.Api.Data;
 using HundeRally.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Admin.CreateUser;
 
@@ -18,5 +19,10 @@ public sealed class Data
         var result = await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
         return result.Entity;
+    }
+
+    public async Task<bool> UserAlreadyExistsAsync(string email)
+    {
+        return await _context.Users.AnyAsync(u => u.Email == email);
     }
 }

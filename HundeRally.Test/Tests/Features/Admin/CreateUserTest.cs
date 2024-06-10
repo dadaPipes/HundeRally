@@ -50,6 +50,42 @@ public class CreateUserTests(Sut App) : TestBase<Sut>
     }
 
     [Fact, Priority(3)]
+    public async Task Create_User_With_Already_Existing_Email()
+    {
+        // Arrange: Login as an admin and create a user
+        var (loginRsp, loginRes) = await App.Client.POSTAsync<LoginEndpoint, LoginRequest, LoginResponse>(new()
+        {
+            Email = "Admin@example.com",
+            Password = "Passw0rd!"
+        });
+        loginRsp.StatusCode.Should().Be(HttpStatusCode.OK);
+        loginRes.Message.Should().Be("Welcome Admin");
+
+        // Create the first user with a specific email
+        var (initialCreateRsp, initialCreateRes) = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(new()
+        {
+            Email = "duplicate@example.com",
+            Password = "Password123",
+            Name = "First User",
+            Roles = ["DogHandler"]
+        });
+        initialCreateRsp.StatusCode.Should().Be(HttpStatusCode.OK);
+        initialCreateRes.Message.Should().Be("User successfully created");
+
+        // Act: Attempt to create another user with the same email
+        var createUserRsp = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest>(new()
+        {
+            Email = "duplicate@example.com",
+            Password = "Password123",
+            Name = "Second User",
+            Roles = ["DogHandler"]
+        });
+
+        // Assert: Check for conflict response
+        createUserRsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact, Priority(4)]
     public async Task Create_User_And_Add_To_Database_Success_With_Admin_Role()
     {
         // Arrange: Login as an admin user

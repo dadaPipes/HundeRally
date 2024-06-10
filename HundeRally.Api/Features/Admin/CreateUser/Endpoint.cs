@@ -10,7 +10,10 @@ public sealed class Endpoint(Data data) : Endpoint<Request, Response, Mapper>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        // make a data call to see if email already exists
+        if (await data.UserAlreadyExistsAsync(req.Email))
+            AddError("User with that email does already exist");  // TODO: Send HTTP 409 Conflict
+        
+        ThrowIfAnyErrors();
 
         await data.CreateUserAsync(Map.ToEntity(req));
 
