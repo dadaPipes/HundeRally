@@ -13,7 +13,7 @@ public sealed class Data
         _context = dbContext;
     }
 
-    public async Task<User> AddUserAsync(User user)
+    public async Task<UserBase> CreateUserAsync(UserBase user)
     {
         var result = await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();

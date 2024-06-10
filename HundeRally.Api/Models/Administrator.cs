@@ -1,6 +1,6 @@
 ﻿namespace HundeRally.Api.Models;
 
-public class Administrator : User
+public class Administrator : UserBase
 {
     public Administrator()
     {

@@ -3,9 +3,9 @@ using HundeRally.Api.Models;
 
 namespace HundeRally.Api.Features.Public.Login;
 
-public class Mapper : Mapper<Request, Response, User>
+public class Mapper : Mapper<Request, Response, UserBase>
 {
-    public override User ToEntity(Request req)
+    public override UserBase ToEntity(Request req)
         => new()
         {
             Email = req.Email,

@@ -14,7 +14,7 @@ public sealed class Data
         _context = dbContext;
     }
 
-    public async Task<User> GetUserByEmailAsync(string email)
+    public async Task<UserBase> GetUserByEmailAsync(string email)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }

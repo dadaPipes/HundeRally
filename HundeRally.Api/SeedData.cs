@@ -6,7 +6,7 @@ namespace HundeRally.Api;
 
 public static class SeedData
 {
-    static readonly IEnumerable<User> seedUsers =
+    static readonly IEnumerable<UserBase> seedUsers =
     [
         new()
         {

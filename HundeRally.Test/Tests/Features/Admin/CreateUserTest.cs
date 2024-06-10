@@ -7,10 +7,10 @@ using LoginResponse      = Public.Login.Response;
 
 namespace HundeRally.Tests.Features.Admin;
 
-public class AddUserTests(Sut App) : TestBase<Sut>
+public class CreateUserTests(Sut App) : TestBase<Sut>
 {
     [Fact, Priority(1)]
-    public async Task Create_User_And_Add_To_Database_Fails_Without_Authentication()
+    public async Task Create_User_And_Add_To_Database_Fails_Without_Login()
     {
         // Arrange & Act: Attempt to create a user without authentication
         var createUserRsp = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest>(new()
@@ -29,10 +29,13 @@ public class AddUserTests(Sut App) : TestBase<Sut>
     public async Task Create_User_And_Add_To_Database_Fails_Without_Admin_Role()
     {
         // Arrange: Login as a non-admin user
-        await App.Client.POSTAsync<LoginEndpoint, LoginRequest, LoginResponse>(new()
+        var (loginRsp, loginRes) = await App.Client.POSTAsync<LoginEndpoint, LoginRequest, LoginResponse>(new()
         {
-            Email  = "Judge@example.com"
+            Email  = "Judge@example.com",
+            Password = "Passw0rd!"
         });
+        loginRsp.StatusCode.Should().Be(HttpStatusCode.OK);
+        loginRes.Message.Should().Be("Welcome Judge");
 
         // Act: Attempt to create a user
         var createUserRsp = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest>(new()
@@ -43,7 +46,7 @@ public class AddUserTests(Sut App) : TestBase<Sut>
         });
 
         // Assert: Check for unauthorized response
-        createUserRsp.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        createUserRsp.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
     [Fact, Priority(3)]

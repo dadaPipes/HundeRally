@@ -42,7 +42,7 @@ public class LoginTests(Sut App) : TestBase<Sut>
             Email    = "Judge@example.com",
             Password = "Passw0rd!"
         });
-        rsp.IsSuccessStatusCode.Should().BeTrue();
+        rsp.StatusCode.Should().Be(HttpStatusCode.OK);
         res.Message.Should().Be("Welcome Judge");
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using HundeRally.Api.Data;
+using Bogus;
+using HundeRally.Api.Models;
+
 namespace HundeRally.Tests;
 
 public class Sut : AppFixture<Program>
@@ -10,24 +13,31 @@ public class Sut : AppFixture<Program>
         using (var scope = Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<HundeRallyDbContext>();
-            
-            dbContext.Users.Add(
-                new()
-                {
-                    Email = "Judge@example.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Passw0rd!"),
-                    Name = "Judge",
-                    Roles = ["Judge"]
-                });
 
-            dbContext.Users.Add(
-                new()
-                {
-                    Email = "Admin@example.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Passw0rd!"),
-                    Name = "Admin",
-                    Roles = ["Admin"]
-                });
+            // Define a default password for all users
+            const string defaultPassword = "Passw0rd!";
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(defaultPassword);
+
+            dbContext.Users.Add(new Administrator
+            {
+                Email = "Admin@example.com",
+                Name = "Admin",
+                PasswordHash = passwordHash
+            });
+
+            dbContext.Users.Add(new Judge
+            {
+                Email = "Judge@example.com",
+                Name = "Judge",
+                PasswordHash = passwordHash
+            });
+
+            dbContext.Users.Add(new DogHandler
+            {
+                Email = "DogHandler@example.com",
+                Name = "DogHandler",
+                PasswordHash = passwordHash
+            });
 
             dbContext.SaveChanges();
         }
@@ -37,7 +47,7 @@ public class Sut : AppFixture<Program>
 
     protected override void ConfigureApp(IWebHostBuilder a)
     {
-        // do host builder configuration here
+        // Host builder configuration
     }
 
     protected override void ConfigureServices(IServiceCollection s)
