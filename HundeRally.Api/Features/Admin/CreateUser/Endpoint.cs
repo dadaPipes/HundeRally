@@ -1,4 +1,6 @@
-﻿namespace Admin.CreateUser;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace Admin.CreateUser;
 
 public sealed class Endpoint(Data data) : Endpoint<Request, Response, Mapper>
 {
@@ -11,8 +13,11 @@ public sealed class Endpoint(Data data) : Endpoint<Request, Response, Mapper>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         if (await data.UserAlreadyExistsAsync(req.Email))
-            AddError("User with that email does already exist");  // TODO: Send HTTP 409 Conflict
-        
+        {
+            var response = new Response { Message = "User with that email does already exist" };
+            await SendAsync(response, 409);
+        }
+
         ThrowIfAnyErrors();
 
         await data.CreateUserAsync(Map.ToEntity(req));

@@ -82,7 +82,7 @@ public class CreateUserTests(Sut App) : TestBase<Sut>
         });
 
         // Assert: Check for conflict response
-        createUserRsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        createUserRsp.StatusCode.Should().Be(HttpStatusCode.Conflict);
     }
 
     [Fact, Priority(4)]
