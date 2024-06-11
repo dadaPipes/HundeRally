@@ -21,7 +21,7 @@ public sealed class Data
         return result.Entity;
     }
 
-    public async Task<bool> UserAlreadyExistsAsync(string email)
+    public async Task<bool> UserExistsAsync(string email)
     {
         return await _context.Users.AnyAsync(u => u.Email == email);
     }

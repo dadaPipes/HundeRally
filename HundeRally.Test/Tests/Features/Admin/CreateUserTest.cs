@@ -1,6 +1,7 @@
 ﻿using CreateUserEndpoint = Admin .CreateUser.Endpoint;
 using CreateUserRequest  = Admin .CreateUser.Request;
 using CreateUserResponse = Admin .CreateUser.Response;
+
 using LoginEndpoint      = Public.Login.Endpoint;
 using LoginRequest       = Public.Login.Request;
 using LoginResponse      = Public.Login.Response;
@@ -52,7 +53,7 @@ public class CreateUserTests(Sut App) : TestBase<Sut>
     [Fact, Priority(3)]
     public async Task Create_User_With_Already_Existing_Email()
     {
-        // Arrange: Login as an admin and create a user
+        // Arrange: Login as an admin
         var (loginRsp, loginRes) = await App.Client.POSTAsync<LoginEndpoint, LoginRequest, LoginResponse>(new()
         {
             Email = "Admin@example.com",
@@ -61,7 +62,7 @@ public class CreateUserTests(Sut App) : TestBase<Sut>
         loginRsp.StatusCode.Should().Be(HttpStatusCode.OK);
         loginRes.Message.Should().Be("Welcome Admin");
 
-        // Create the first user with a specific email
+        // Arrange: Create the first user with a specific email
         var (initialCreateRsp, initialCreateRes) = await App.Client.POSTAsync<CreateUserEndpoint, CreateUserRequest, CreateUserResponse>(new()
         {
             Email = "duplicate@example.com",
@@ -82,7 +83,7 @@ public class CreateUserTests(Sut App) : TestBase<Sut>
         });
 
         // Assert: Check for conflict response
-        createUserRsp.StatusCode.Should().Be(HttpStatusCode.Conflict);
+        createUserRsp.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact, Priority(4)]

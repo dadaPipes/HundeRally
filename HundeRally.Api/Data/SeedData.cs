@@ -1,8 +1,7 @@
-using HundeRally.Api.Data;
 using HundeRally.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace HundeRally.Api;
+namespace HundeRally.Api.Data;
 
 public static class SeedData
 {

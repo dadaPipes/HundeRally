@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Admin.CreateUser;
+﻿namespace Admin.CreateUser;
 
 public sealed class Endpoint(Data data) : Endpoint<Request, Response, Mapper>
 {
@@ -12,11 +10,8 @@ public sealed class Endpoint(Data data) : Endpoint<Request, Response, Mapper>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (await data.UserAlreadyExistsAsync(req.Email))
-        {
-            var response = new Response { Message = "User with that email does already exist" };
-            await SendAsync(response, 409);
-        }
+        if (await data.UserExistsAsync(req.Email))
+            AddError("User with that email does already exist");
 
         ThrowIfAnyErrors();
 
