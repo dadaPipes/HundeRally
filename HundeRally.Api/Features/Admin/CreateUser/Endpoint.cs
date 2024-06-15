@@ -4,7 +4,7 @@ public sealed class Endpoint(Data data) : Endpoint<Request, Response, Mapper>
 {
     public override void Configure()
     {
-        Post("api/admin/create-user");
+        Post("api/admin/user/create");
         Roles("Admin");
     }
 
