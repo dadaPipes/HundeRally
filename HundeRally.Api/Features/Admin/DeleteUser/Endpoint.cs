@@ -4,7 +4,7 @@ public sealed class Endpoint(Data data) : Endpoint<Request, Response, Mapper>
 {
     public override void Configure()
     {
-        Delete("api/admin/delete-user");
+        Delete("api/admin/user/delete");
         Roles("Admin");
     }
 
