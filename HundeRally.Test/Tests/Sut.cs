@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using HundeRally.Api.Data;
-using Bogus;
 using HundeRally.Api.Models;
 
 namespace HundeRally.Tests;
@@ -18,27 +17,28 @@ public class Sut : AppFixture<Program>
             const string defaultPassword = "Passw0rd!";
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(defaultPassword);
 
-            dbContext.Users.Add(new Administrator
+            // create users
+
+
+            // Create users
+            var admin = new Administrator
             {
                 Email = "Admin@example.com",
                 Name = "Admin",
-                PasswordHash = passwordHash
-            });
+                PasswordHash = passwordHash };
 
-            dbContext.Users.Add(new Judge
-            {
-                Email = "Judge@example.com",
+            var judge = new Judge
+            { Email = "Judge@example.com",
                 Name = "Judge",
-                PasswordHash = passwordHash
-            });
+                PasswordHash = passwordHash };
 
-            dbContext.Users.Add(new DogHandler
+            var dogHandler = new DogHandler
             {
                 Email = "DogHandler@example.com",
                 Name = "DogHandler",
-                PasswordHash = passwordHash
-            });
+                PasswordHash = passwordHash };
 
+            dbContext.Users.AddRange(admin, judge, dogHandler);
             dbContext.SaveChanges();
         }
 
